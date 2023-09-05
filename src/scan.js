@@ -29,7 +29,6 @@ class Scan extends Component {
         result: data,
       });
       getDoc(doc(db, "paid-users", data.text?.split("#")[1])).then((dc) => {
-        console.log(dc.data());
         if (dc.data().scan) {
           this.setState({
             user: {
@@ -82,8 +81,8 @@ class Scan extends Component {
     };
 
     return (
-      <div className="flex flex-col justify-between bg-orange-600  w-[94%] h-[90%] rounded-xl shadow-lg overflow-hidden">
-        <div className="relative h-1/2 bg-orange-400">
+      <div className="flex md:flex-row flex-col justify-between bg-orange-600  w-[94%] h-[90%] rounded-xl shadow-lg overflow-hidden">
+        <div className="relative md:w-1/2 md:h-full w-full h-1/2 bg-orange-400">
           {this.state.result && this.state.user ? (
             this.state.user.status ? (
               <div className="w-full h-full py-4 bg-gradient-to-br from-green-600 to-green-400 flex flex-col justify-between items-center">
@@ -130,7 +129,7 @@ class Scan extends Component {
             //<></>
             <QrReader
               delay={this.state.delay}
-              className="h-auto w-full"
+              className="h-auto md:h-full w-full"
               onError={this.handleError}
               onScan={this.handleScan}
             />
@@ -142,7 +141,7 @@ class Scan extends Component {
             </div>
           )}
         </div>
-        <div className="relative flex flex-col h-1/2 items-center justify-between mt-4">
+        <div className="relative flex flex-col md:w-1/2 md:h-full w-full h-1/2 items-center justify-between mt-4">
           {/* <p>{this.state.result?.text}</p> */}
 
           <div className="flex flex-col w-full bg-orange-100 h-full">
