@@ -23,6 +23,7 @@ function View() {
   const { user, setpopup, server_add } = useReducer();
   const [data, setData] = useState({});
   const [load, setLoad] = useState(false);
+
   const [email_hover, setEmHover] = useState({
     visible: false,
     name: null,
@@ -140,6 +141,18 @@ function View() {
           <div className="flex flex-col ml-4">
             <h1 className="text-3xl font-extrabold text-white">View</h1>
             <h1 className="text-lg text-white">Data</h1>
+          </div>
+        </div>
+        <div className="flex flex-col text-white">
+          <h1 className="font-semibold">Summary</h1>
+          <div className="flex flex-row text-sm">
+            <h1>Total : </h1>
+            <h1>{data?.length}</h1>
+          </div>
+          <div className="flex flex-row text-sm">
+            <h1>Scanned : </h1>
+            {/* <h1>{data?.filter((dc) => dc.scan === true).length}</h1> */}
+            <h1>{0}</h1>
           </div>
         </div>
       </div>

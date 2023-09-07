@@ -44,37 +44,6 @@ function Home() {
         </div>
       </div>
       <div className="flex flex-col w-full items-center justify-around bg-gradient-to-br from-orange-500 to-yellow-500 h-4/5 ">
-        <div className=" flex flex-col mt-8 mx-auto  ">
-          <h1 className="text-md text-center bg-green-500 rounded-t-lg text-white">
-            Server status :
-          </h1>
-          <div className="bg-white flex flex-row p-1 items-center ">
-            <input
-              type="text"
-              value={server_st}
-              disabled={true}
-              className="w-[80%] mx-2 text-sm text-gray-400"
-            />
-            <div
-              onClick={() => server_stat()}
-              className="flex flex-row bg-gradient-to-br cursor-pointer text-white from-blue-400 to-cyan-400 text-sm px-2 py-0.5 rounded-full"
-            >
-              {load && (
-                <ReactLoading
-                  className="mr-2"
-                  type={"spin"}
-                  color={"white"}
-                  height={20}
-                  width={20}
-                />
-              )}
-              Check
-            </div>
-          </div>
-          <h1 className="text-xs text-center italic bg-blue-100 rounded-b-lg text-slate-400">
-            {server_add ? server_add.split("https://")[1].split("/")[0] : ""}
-          </h1>
-        </div>
         <div className="grid grid-cols-2 w-full items-center h-full justify-items-center	 p-4 ">
           <Link
             className="flex flex-col hover:bg-white/40 text-white justify-around py-4 bg-white/30 w-24 h-28 border border-white rounded-md text-center"
@@ -104,6 +73,42 @@ function Home() {
             <ArrowLeftOnRectangleIcon className="w-16 text-white mx-auto" />
             Logout
           </div>
+        </div>
+        <div className=" flex flex-col mb-8 mx-auto transform opacity-80  ">
+          <h1 className="text-md text-center bg-white/50 rounded-t-lg border border-white text-white">
+            Server status :
+          </h1>
+          <div className="bg-white/30 flex flex-row p-1 items-center border-x border-white ">
+            <input
+              type="text"
+              value={server_st}
+              disabled={true}
+              className={
+                "w-[80%] mx-2 text-sm bg-transparent " +
+                (server_st === "Please press check "
+                  ? " text-white"
+                  : " text-green-500")
+              }
+            />
+            <div
+              onClick={() => server_stat()}
+              className="flex border border-white  flex-row bg-gradient-to-br cursor-pointer  text-white from-orange-400 to-yellow-400 text-sm px-2 py-0.5 rounded-full"
+            >
+              {load && (
+                <ReactLoading
+                  className="mr-2"
+                  type={"spin"}
+                  color={"white"}
+                  height={20}
+                  width={20}
+                />
+              )}
+              Check
+            </div>
+          </div>
+          <h1 className="text-xs text-center italic bg-white/40 border border-white  rounded-b-lg text-white">
+            {server_add ? server_add.split("https://")[1].split("/")[0] : ""}
+          </h1>
         </div>
       </div>
     </div>

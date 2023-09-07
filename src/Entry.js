@@ -126,7 +126,10 @@ function Entry() {
                   <h1 className="text-sm font-bold">Name :</h1>
                   <h1 className="text-sm">
                     {data?.name +
-                      (data?.guests > 1 ? " + " + data?.guests - 1 : "")}
+                      (data?.guests > 1
+                        ? " + " + parseInt(data?.guests - 1)
+                        : "") +
+                      (data?.fac && data?.fac === true ? " and family" : "")}
                   </h1>
                 </div>
                 <div className="grid grid-cols-2  place-items-start  my-2  ">

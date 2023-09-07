@@ -3,7 +3,7 @@ import {
   ArrowLeftIcon,
   PlusCircleIcon,
 } from "@heroicons/react/24/outline";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { db } from "./firebase";
 import useReducer from "./reducerHook";
@@ -18,6 +18,7 @@ function Add() {
   const { user, setpopup, server_add } = useReducer();
   const [form, setForm] = useState({});
   const [email, setEmail] = useState(true);
+  const [fac_check, setFacCheck] = useState(false);
   const [check, setCheck] = useState(false);
   const [load, setLoad] = useState(false);
   const sendEmail = async (s_email, code, name) => {
@@ -25,7 +26,7 @@ function Add() {
       method: "get",
       url:
         server_add +
-        "send?code=" +
+        (fac_check ? "send_fac?code=" : "send?code=") +
         code +
         "&email=" +
         s_email +
@@ -37,6 +38,9 @@ function Add() {
     });
   };
   const AddData = async () => {
+    // getDocs(
+    //   query(collection(db, "paid-users"), where("email", "!=", form?.email))
+    // ).then((dc) => dc.docs.map((dic) => console.log(dic.id)));
     setLoad(true);
     if (form?.name && form?.email && form?.amount && form?.guests) {
       setCheck(false);
@@ -45,6 +49,7 @@ function Add() {
         scan: false,
         added_by: user.email,
         sent_email: email,
+        fac: fac_check,
       }).then(async (dc) => {
         email && (await sendEmail(form?.email, dc.id, form?.name));
         setForm({ name: "", email: "", amount: "", guests: "" });
@@ -124,6 +129,18 @@ function Add() {
             />
             <label className="ml-1 text-slate-600 " htmlFor="email_check">
               Send email
+            </label>
+          </div>
+          <div className="grid-col-1 items-center gap-2">
+            <input
+              checked={fac_check}
+              onChange={(e) => setFacCheck(e.target.checked)}
+              type="checkbox"
+              className="transform scale-125"
+              name="faculty_check"
+            />
+            <label className="ml-1 text-slate-600 " htmlFor="faculty_check">
+              Faculty
             </label>
           </div>
 

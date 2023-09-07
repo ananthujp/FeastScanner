@@ -3,7 +3,7 @@ import React, { Component, useEffect } from "react";
 import QrReader from "react-qr-scanner";
 import { db } from "./firebase";
 import { LifebuoyIcon } from "@heroicons/react/24/outline";
-import { CheckCircleIcon } from "@heroicons/react/24/solid";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/solid";
 import logo from "./sagLogoFull.svg";
 import ringer from "./success.mp3";
 import ringer_2 from "./wrong.mp3";
@@ -28,31 +28,13 @@ class Scan extends Component {
       this.setState({
         result: data,
       });
-      getDoc(doc(db, "paid-users", data.text?.split("#")[1])).then((dc) => {
-        if (dc.data().scan) {
-          this.setState({
-            user: {
-              status: false,
-              time: new Date(dc.data().timestamp.seconds * 1000).toString(),
-            },
-          });
-          const audio = new Audio(ringer_2);
-          audio.play();
-          setTimeout(() => this.setState({ result: null, user: null }), 3000);
-        } else {
-          setDoc(
-            doc(db, "paid-users", dc.id),
-            { scan: true, timestamp: serverTimestamp() },
-            { merge: true }
-          ).then(() => {
-            const audio = new Audio(ringer);
-            audio.play();
-            //::TODO: success.play();
+      getDoc(doc(db, "paid-users", data.text?.split("#")[1]))
+        .then((dc) => {
+          if (dc.data().scan) {
             this.setState({
               user: {
-                status: true,
-                name: dc.data().name,
-                guests: dc.data().guests,
+                status: false,
+                time: new Date(dc.data().timestamp.seconds * 1000).toString(),
               },
             });
             this.setState((prevState) => ({
@@ -60,15 +42,74 @@ class Scan extends Component {
                 ...prevState.data,
                 {
                   name: dc.data().name,
-                  email: dc.data().email,
-                  guests: dc.data().guests,
+                  email:
+                    "Scanned again. Original:" +
+                    new Date(dc.data().timestamp.seconds * 1000).toString(),
+                  guests: 1,
+                  status: false,
                 },
               ],
             }));
+            const audio = new Audio(ringer_2);
+            audio.play();
             setTimeout(() => this.setState({ result: null, user: null }), 3000);
+          } else {
+            setDoc(
+              doc(db, "paid-users", dc.id),
+              { scan: true, timestamp: serverTimestamp() },
+              { merge: true }
+            ).then(() => {
+              const audio = new Audio(ringer);
+              audio.play();
+              //::TODO: success.play();
+              this.setState({
+                user: {
+                  status: true,
+                  name: dc.data().name,
+                  guests: dc.data().guests,
+                },
+              });
+              this.setState((prevState) => ({
+                data: [
+                  ...prevState.data,
+                  {
+                    name: dc.data().name,
+                    email: dc.data().email,
+                    guests: dc.data().guests,
+                    status: true,
+                  },
+                ],
+              }));
+              setTimeout(
+                () => this.setState({ result: null, user: null }),
+                3000
+              );
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            user: {
+              status: false,
+              time: new Date().toString(),
+            },
           });
-        }
-      });
+          this.setState((prevState) => ({
+            data: [
+              ...prevState.data,
+              {
+                name: "Invalid QR Code",
+                email: "",
+                guests: 1,
+                status: false,
+              },
+            ],
+          }));
+          const audio = new Audio(ringer_2);
+          audio.play();
+          setTimeout(() => this.setState({ result: null, user: null }), 3000);
+        });
     }
   }
   handleError(err) {
@@ -151,21 +192,31 @@ class Scan extends Component {
             <div className="flex flex-col overflow-y-auto">
               {this.state.data?.toReversed().map((dc, i) => (
                 <div
+                  key={`scan.log.item.${i}`}
                   className={
                     "flex flex-row justify-between w-full " +
                     (i === 0 ? " px-4 py-2" : " px-4 py-1")
                   }
                 >
                   <div className="flex flex-row">
-                    <CheckCircleIcon
-                      className={
-                        " text-green-400" + (i === 0 ? " w-8" : " w-4")
-                      }
-                    />
+                    {dc.status ? (
+                      <CheckCircleIcon
+                        className={
+                          " text-green-400" + (i === 0 ? " w-8" : " w-4")
+                        }
+                      />
+                    ) : (
+                      <XCircleIcon
+                        className={
+                          " text-red-500" + (i === 0 ? " w-8" : " w-4")
+                        }
+                      />
+                    )}
                     <h1
                       className={
-                        " font-semibold text-slate-600 ml-2 " +
-                        (i === 0 ? " text-md" : " text-xs")
+                        " font-semibold  ml-2 " +
+                        (i === 0 ? " text-md" : " text-xs") +
+                        (dc.status ? " text-slate-600" : " text-red-500")
                       }
                     >
                       {dc.name + (dc.guests > 1 ? " +" + dc.guests : "")}
@@ -173,8 +224,9 @@ class Scan extends Component {
                   </div>
                   <h1
                     className={
-                      " italic text-slate-600" +
-                      (i === 0 ? " text-md" : " text-xs")
+                      " italic " +
+                      (i === 0 ? " text-md" : " text-xs") +
+                      (dc.status ? " text-slate-600" : " text-red-500")
                     }
                   >
                     {dc.email}
