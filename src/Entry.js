@@ -5,6 +5,8 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { CheckBadgeIcon } from "@heroicons/react/24/solid";
 import logo from "./sagLogoFull.svg";
+import qrlogo1 from "./qrpage-logo-01.svg";
+import qrlogo2 from "./qrpage-logo-02.svg";
 function Entry() {
   let { pathID } = useParams();
   const [data, setData] = useState();
@@ -13,7 +15,7 @@ function Entry() {
   }, []);
   return (
     <div className="flex flex-col w-[94%] bg-white h-[90%] rounded-xl shadow-lg overflow-y-auto ">
-      <div className="flex items-center p-4 justify-center  bg-[url('./bg-top.svg')] bg-cover h-full w-full">
+      <div className="flex items-center p-4 justify-center  bg-[url('./bg-top-qr.svg')] bg-cover h-full w-full">
         {data?.scan ? (
           <div className="flex flex-col mx-auto w-full">
             <CheckBadgeIcon className="w-2/4 mx-auto text-green-500 stroke stroke-green-300 stroke-[0.2]" />
@@ -122,7 +124,10 @@ function Entry() {
               <div className="flex flex-col w-1/2 ml-4">
                 <div className="grid grid-cols-2  my-2 place-items-start">
                   <h1 className="text-sm font-bold">Name :</h1>
-                  <h1 className="text-sm">{data?.name}</h1>
+                  <h1 className="text-sm">
+                    {data?.name +
+                      (data?.guests > 1 ? " + " + data?.guests - 1 : "")}
+                  </h1>
                 </div>
                 <div className="grid grid-cols-2  place-items-start  my-2  ">
                   <h1 className="text-sm font-bold">Email :</h1>
@@ -131,16 +136,44 @@ function Entry() {
               </div>
             </div>
 
-            <h1 class="font-bold text-transparent mt-4 text-xl bg-clip-text bg-gradient-to-br from-orange-600 to-yellow-400">
+            <h1 class="font-bold text-transparent mt-4 text-center text-xl bg-clip-text bg-gradient-to-br from-orange-600 to-yellow-400">
               Happy Onam
             </h1>
-            <h1 className="text-sm text-gray-400">
-              Onam is an annual Indian - regional harvest or cultural festival
-              celebrated mostly by the people of Kerala. A major annual event
-              for Keralites, it is the official festival of the state and
-              includes a spectrum of cultural events. Onam commemorates King
-              Mahabali and Vamana.
-            </h1>
+            <div className="flex flex-row items-center gap-1">
+              <img src={qrlogo2} className="w-1/4" alt="" />
+              <h1 className="text-sm text-gray-400">
+                Onam is an annual Indian - regional harvest or cultural festival
+                celebrated mostly by the people of Kerala. A major annual event
+                for Keralites, it is the official festival of the state and
+                includes a spectrum of cultural events. Onam commemorates King
+                Mahabali and Vamana.
+              </h1>
+            </div>
+            <div className="flex flex-row items-center gap-1">
+              <h1 className="text-sm text-gray-400 text-justify">
+                The Onam sadya (feast) is another indispensable part of Onam,and
+                almost every Keralite either makes or attends one. The Onasadya
+                reflects the spirit of the season and is traditionally made with
+                seasonal vegetables such as yam, cucumber, ash gourd and so
+                on.The feast is served on plantain leaves and consists of nine
+                courses, but may include over two dozen dishes, including (but
+                not limited to): Chips (especially Banana chips),
+                Sharkaraveratti (Fried pieces of banana coated with
+                jaggery),Pappadam, various vegetable and soups such as Injipuli
+                (also called PuliInji), Thoran, Mezhukkupuratti, Kaalan, Olan,
+                Avial, Sambhar, Dal served along with a small quantity of ghee,
+                Erisheri, Molosyam, Rasam, Puliseri (also referred to as Velutha
+                curry), Kichadi (not to be confused with Khichdi) and Pachadi
+                (its sweet variant), Moru (buttermilk or curd mixed with water),
+                Pickles both sweet and sour, and coconut chutney. The feast ends
+                with a series of dessert called Payasam (a sweet dish made of
+                milk, sugar, jaggery, and other traditional Indian savories)
+                eaten either straight or mixed with ripe small plantain. The
+                curries are served with rice, usually the 'Kerala Matta'
+                parboiled rice preferred in Kerala
+              </h1>
+              <img src={qrlogo1} className="w-1/4" alt="" />
+            </div>
           </div>
         )}
       </div>

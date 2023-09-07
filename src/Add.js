@@ -11,20 +11,46 @@ import Login from "./login";
 import { ArrowUturnLeftIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router";
 import logo from "./sagLogoFull.svg";
+import axios from "axios";
+import ReactLoading from "react-loading";
+
 function Add() {
-  const { user, setpopup } = useReducer();
-  const [form, setForm] = useState();
+  const { user, setpopup, server_add } = useReducer();
+  const [form, setForm] = useState({});
+  const [email, setEmail] = useState(true);
   const [check, setCheck] = useState(false);
-  const AddData = () => {
+  const [load, setLoad] = useState(false);
+  const sendEmail = async (s_email, code, name) => {
+    axios({
+      method: "get",
+      url:
+        server_add +
+        "send?code=" +
+        code +
+        "&email=" +
+        s_email +
+        "&name=" +
+        name,
+      data: "",
+    }).then((response) => {
+      setpopup({ message: "Email sent!", type: 1 });
+    });
+  };
+  const AddData = async () => {
+    setLoad(true);
     if (form?.name && form?.email && form?.amount && form?.guests) {
       setCheck(false);
-      addDoc(collection(db, "paid-users"), { ...form, scan: false }).then(
-        (dc) => {
-          console.log(dc.id);
-          setForm({ name: "", email: "", amount: "", guests: "" });
-          setpopup({ message: "Item Added", type: 1 });
-        }
-      );
+      addDoc(collection(db, "paid-users"), {
+        ...form,
+        scan: false,
+        added_by: user.email,
+        sent_email: email,
+      }).then(async (dc) => {
+        email && (await sendEmail(form?.email, dc.id, form?.name));
+        setForm({ name: "", email: "", amount: "", guests: "" });
+        setpopup({ message: "Item Added", type: 1 });
+        setLoad(false);
+      });
     } else {
       setCheck(true);
     }
@@ -87,10 +113,33 @@ function Add() {
               type="number"
             />
           </div>
+
+          <div className="grid-col-1 items-center gap-2">
+            <input
+              checked={email}
+              onChange={(e) => setEmail(e.target.checked)}
+              type="checkbox"
+              className="transform scale-125"
+              name="email_check"
+            />
+            <label className="ml-1 text-slate-600 " htmlFor="email_check">
+              Send email
+            </label>
+          </div>
+
           <div
             onClick={() => AddData()}
-            className="bg-gradient-to-br from-orange-600 hover:to-yellow-500 cursor-pointer hover:from-orange-600 to-yellow-400 px-6 my-2 mx-auto py-1 text-white rounded-full"
+            className="flex flex-row items-center justify-between bg-gradient-to-br from-orange-600 hover:to-yellow-500 cursor-pointer hover:from-orange-600 to-yellow-400 px-6 my-2 mx-auto py-1 text-white rounded-full"
           >
+            {load && (
+              <ReactLoading
+                className="mr-2"
+                type={"spin"}
+                color={"blue"}
+                height={20}
+                width={20}
+              />
+            )}
             Add
           </div>
         </div>
