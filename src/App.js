@@ -11,6 +11,7 @@ function App({ children }) {
   return (
     <div className="flex items-center justify-center w-full h-screen bg-[url('./bg.svg')] bg-cover bg-center">
       <div
+        style={{ zIndex: 110 }}
         className={
           "absolute flex flex-row justify-around top-5 transition-all ease-in-out duration-1000 px-4 py-0.5 rounded-full z-100  " +
           (popup !== null ? " top-5" : " -top-20 ") +

@@ -67,10 +67,17 @@ function View() {
   }, []);
   //console.log(data);
   const deleteItem = (id) => {
-    if (window.confirm("Delete item?")) {
-      deleteDoc(doc(db, "paid-users", id)).then(() =>
-        setpopup({ message: "Item deleted", type: 1 })
-      );
+    if (user?.email === "ananthujp@gmail.com") {
+      if (window.confirm("Delete item?")) {
+        deleteDoc(doc(db, "paid-users", id)).then(() =>
+          setpopup({ message: "Item deleted", type: 1 })
+        );
+      }
+    } else {
+      setpopup({
+        message: "Feature Disabled, Please contact the administrator",
+        type: 0,
+      });
     }
   };
   const changeScan = (id, sc) => {
@@ -152,7 +159,11 @@ function View() {
           <div className="flex flex-row text-sm">
             <h1>Scanned : </h1>
             {/* <h1>{data?.filter((dc) => dc.scan === true).length}</h1> */}
-            <h1>{0}</h1>
+            <h1>
+              {Array.isArray(data)
+                ? data?.filter((dc) => dc.data.scan === true).length
+                : "Fetching.."}
+            </h1>
           </div>
         </div>
       </div>

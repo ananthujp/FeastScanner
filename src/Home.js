@@ -34,13 +34,19 @@ function Home() {
   };
   return user ? (
     <div className="flex flex-wrap  w-[94%] flex-col items-center justify-center bg-white h-3/4 rounded-xl shadow-lg overflow-hidden">
-      <div className="flex flex-row items-center justify-start w-full px-12 h-1/5 ">
-        <img src={logo} className="w-14 mr-4" alt="" />
-        <div className="flex flex-col pl-6">
-          <h1 className="text-3xl font-extrabold text-orange-500">
-            Onam - Entry
-          </h1>
-          <h1 className="text-sm text-yellow-500">Home</h1>
+      <div className="flex flex-row items-center justify-between w-full px-12 h-1/5 ">
+        <div className="flex flex-row items-center justify-start ">
+          <img src={logo} className="w-14 mr-4" alt="" />
+          <div className="flex flex-col pl-6">
+            <h1 className="text-3xl font-extrabold text-orange-500">
+              Onam - Entry
+            </h1>
+            <h1 className="text-sm text-yellow-500">Home</h1>
+          </div>
+        </div>
+        <div className="flex flex-col text-slate-900">
+          <h1>Logged in as :</h1>
+          <h1 className="text-xs">{user?.email}</h1>
         </div>
       </div>
       <div className="flex flex-col w-full items-center justify-around bg-gradient-to-br from-orange-500 to-yellow-500 h-4/5 ">
@@ -107,7 +113,11 @@ function Home() {
             </div>
           </div>
           <h1 className="text-xs text-center italic bg-white/40 border border-white  rounded-b-lg text-white">
-            {server_add ? server_add.split("https://")[1].split("/")[0] : ""}
+            Host : &nbsp;&nbsp;
+            {server_add
+              ? server_add.split("https://")[1].split("/")[0].split(".")[1]
+              : ""}
+            .com
           </h1>
         </div>
       </div>
